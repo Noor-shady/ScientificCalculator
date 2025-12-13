@@ -43,7 +43,7 @@ class RoundedButton extends JButton {
     // Draw the border for specific buttons (optional)
     @Override
     protected void paintBorder(Graphics g) {
-        // If you want a border, uncomment below
+        // If I want a border, uncomment below
         // Graphics2D g2 = (Graphics2D) g.create();
         // g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         // g2.setColor(getForeground());
