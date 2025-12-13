@@ -67,3 +67,7 @@ public class CalculatorUI extends JFrame {
             buttonPanel.add(btn);
         }
 
+        add(display, BorderLayout.NORTH);
+        add(buttonPanel, BorderLayout.CENTER);
+    }
+
