@@ -27,3 +27,9 @@ public class CalculatorUI extends JFrame {
         setTitle("Scientific Calculator");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 680);
+        // Center on screen
+        setLocationRelativeTo(null);
+
+        // Set the main window background
+        getContentPane().setBackground(BLACK_BG);
+
