@@ -71,3 +71,5 @@ public class CalculatorUI extends JFrame {
         add(buttonPanel, BorderLayout.CENTER);
     }
 
+    private JButton createStyledButton(String text) {
+
