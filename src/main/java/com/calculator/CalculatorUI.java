@@ -75,5 +75,4 @@ public class CalculatorUI extends JFrame {
         RoundedButton btn = new RoundedButton(text, 20);
         btn.setFont(new Font("Arial", Font.BOLD, 18));
 
-
-
+        if (text.equals("=")) {
