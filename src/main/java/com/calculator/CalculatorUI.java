@@ -76,3 +76,10 @@ public class CalculatorUI extends JFrame {
         btn.setFont(new Font("Arial", Font.BOLD, 18));
 
         if (text.equals("=")) {
+            btn.setBackground(PINK_COLOR);
+            btn.setForeground(WHITE_TEXT);
+        } else if ("0123456789.".contains(text)) {
+            // Numbers are Dark Gray with White Text
+            btn.setBackground(GRAY_BTN);
+            btn.setForeground(WHITE_TEXT);
+        } else if (text.equals("C")) {
