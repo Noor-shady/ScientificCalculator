@@ -10,3 +10,4 @@ public class CalculatorUI extends JFrame {
     private final MathService mathService;
     private boolean isResultDisplayed = false;
 
+
