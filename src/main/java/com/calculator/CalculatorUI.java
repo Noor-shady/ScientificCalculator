@@ -33,3 +33,7 @@ public class CalculatorUI extends JFrame {
         // Set the main window background
         getContentPane().setBackground(BLACK_BG);
 
+        display = new JTextField();
+        display.setFont(new Font("JetBrains Mono", Font.BOLD, 40));
+        display.setHorizontalAlignment(JTextField.RIGHT);
+        display.setEditable(false);
