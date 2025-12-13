@@ -37,3 +37,33 @@ public class CalculatorUI extends JFrame {
         display.setFont(new Font("JetBrains Mono", Font.BOLD, 40));
         display.setHorizontalAlignment(JTextField.RIGHT);
         display.setEditable(false);
+
+        display.setBackground(BLACK_BG);
+        // Input text will be Pink
+        display.setForeground(PINK_COLOR);
+        display.setCaretColor(WHITE_TEXT);
+        display.setBorder(BorderFactory.createEmptyBorder(30, 20, 30, 20));
+
+        // Buttons Panel (Center)
+        JPanel buttonPanel = new JPanel();
+        // 15px gap for rounded buttons to look clean
+        buttonPanel.setLayout(new GridLayout(6, 4, 15, 15));
+        buttonPanel.setBackground(BLACK_BG);
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        // Button Labels
+        String[] buttons = {
+                "sin", "cos", "tan", "C",
+                "log", "ln", "sqrt", "/",
+                "7", "8", "9", "*",
+                "4", "5", "6", "-",
+                "1", "2", "3", "+",
+                "(", "0", ")", "="
+        };
+
+        for (String text : buttons) {
+            JButton btn = createStyledButton(text);
+            btn.addActionListener(createAction(text));
+            buttonPanel.add(btn);
+        }
+
