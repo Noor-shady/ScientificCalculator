@@ -129,3 +129,9 @@ public class CalculatorUI extends JFrame {
         try {
             String input = display.getText();
             double result = mathService.evaluate(input);
+
+            if (result == (long) result) {
+                display.setText(String.format("%d", (long) result));
+            } else {
+                display.setText(String.format("%.4f", result));
+            }
