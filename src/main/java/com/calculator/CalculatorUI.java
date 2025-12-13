@@ -86,4 +86,46 @@ public class CalculatorUI extends JFrame {
             btn.setBackground(WHITE_TEXT);
             btn.setForeground(PINK_COLOR);
         } else {
+            btn.setBackground(DARK_BTN);
+            btn.setForeground(PINK_COLOR);
+        }
 
+        return btn;
+    }
+
+    private ActionListener createAction(String text) {
+        return e -> {
+            // If a result is currently shown and the user types a number, clear the screen first
+            if (isResultDisplayed && !text.equals("=")) {
+                if ("0123456789".contains(text)) {
+                    display.setText("");
+                }
+                isResultDisplayed = false;
+                // Reset color to Pink for input
+                display.setForeground(PINK_COLOR);
+            }
+
+            switch (text) {
+                case "=":
+                    calculateResult();
+                    break;
+                case "C":
+                    display.setText("");
+                    display.setForeground(PINK_COLOR);
+                    break;
+                case "sqrt":
+                    display.setText(display.getText() + "sqrt(");
+                    break;
+                case "sin": case "cos": case "tan": case "log": case "ln":
+                    display.setText(display.getText() + text + "(");
+                    break;
+                default:
+                    display.setText(display.getText() + text);
+            }
+        };
+    }
+
+    private void calculateResult() {
+        try {
+            String input = display.getText();
+            double result = mathService.evaluate(input);
