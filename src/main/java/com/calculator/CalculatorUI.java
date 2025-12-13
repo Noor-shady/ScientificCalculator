@@ -1,137 +1,193 @@
 package com.calculator;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
+import java.text.DecimalFormat;
 
 public class CalculatorUI extends JFrame {
 
-    private JTextField display;
-    private final MathService mathService;
-    private boolean isResultDisplayed = false;
-
-    private final Color PINK_COLOR = new Color(255, 20, 147);
-    private final Color BLACK_BG   = new Color(18, 18, 18);
-    private final Color WHITE_TEXT = Color.WHITE;
-    // Dark Gray for numbers
-    private final Color GRAY_BTN   = new Color(45, 45, 45);
-    // Almost black for functions
+    private final Color PINK_COLOR = new Color(255, 130, 253, 255);
+    // Black text
+    private final Color WHITE_TEXT = new Color(0, 0, 0);
+    private final Color BLACK_BG   = new Color(255, 255, 255);
+    // Pink numbers
+    private final Color GRAY_BTN   = new Color(255, 130, 253);
+    // Dark function buttons
     private final Color DARK_BTN   = new Color(28, 28, 28);
 
+    // --- Components ---
+    private JTextField display;
+    private JTextArea historyArea;
+    private JToggleButton degRadToggle;
+    private boolean isDegreeMode = true;
+
     public CalculatorUI() {
-        mathService = new MathService();
-        initUI();
-    }
-
-    private void initUI() {
-        setTitle("Scientific Calculator");
+        setTitle("Pink Scientific Calculator");
+        setSize(600, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 680);
-        // Center on screen
-        setLocationRelativeTo(null);
-
-        // Set the main window background
+        setLayout(new BorderLayout());
         getContentPane().setBackground(BLACK_BG);
 
+        initDisplayArea();
+        initCenterPanel();
+        initHistorySidebar();
+
+        setLocationRelativeTo(null);
+        setVisible(true);
+        display.requestFocusInWindow();
+    }
+
+    private void initDisplayArea() {
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBackground(BLACK_BG);
+        topPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
+
+        degRadToggle = new JToggleButton("DEG");
+        degRadToggle.setFont(new Font("Arial", Font.BOLD, 12));
+        degRadToggle.setBackground(PINK_COLOR);
+        degRadToggle.setForeground(WHITE_TEXT);
+        degRadToggle.setFocusPainted(false);
+        degRadToggle.addActionListener(e -> {
+            isDegreeMode = degRadToggle.isSelected();
+            degRadToggle.setText(isDegreeMode ? "RAD" : "DEG");
+        });
+
+        // Display Field
         display = new JTextField();
-        display.setFont(new Font("JetBrains Mono", Font.BOLD, 40));
+        display.setFont(new Font("Arial", Font.PLAIN, 32));
         display.setHorizontalAlignment(JTextField.RIGHT);
-        display.setEditable(false);
-
         display.setBackground(BLACK_BG);
-        // Input text will be Pink
-        display.setForeground(PINK_COLOR);
-        display.setCaretColor(WHITE_TEXT);
-        display.setBorder(BorderFactory.createEmptyBorder(30, 20, 30, 20));
+        display.setForeground(WHITE_TEXT);
+        display.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, PINK_COLOR));
+        display.setCaretColor(PINK_COLOR);
 
-        // Buttons Panel (Center)
+        // Keyboard Support
+        display.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    calculateResult();
+                } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    display.setText("");
+                }
+            }
+        });
+
+        topPanel.add(degRadToggle, BorderLayout.WEST);
+        topPanel.add(display, BorderLayout.CENTER);
+        add(topPanel, BorderLayout.NORTH);
+    }
+
+    private void initCenterPanel() {
         JPanel buttonPanel = new JPanel();
-        // 15px gap for rounded buttons to look clean
-        buttonPanel.setLayout(new GridLayout(6, 4, 15, 15));
+        buttonPanel.setLayout(new GridLayout(6, 4, 8, 8));
         buttonPanel.setBackground(BLACK_BG);
-        buttonPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        buttonPanel.setBorder(new EmptyBorder(10, 15, 15, 15));
 
-        // Button Labels
         String[] buttons = {
-                "sin", "cos", "tan", "C",
-                "log", "ln", "sqrt", "/",
-                "7", "8", "9", "*",
-                "4", "5", "6", "-",
-                "1", "2", "3", "+",
-                "(", "0", ")", "="
+                "sin", "cos", "tan", "AC",
+                "log", "ln",  "(",   ")",
+                "7",   "8",   "9",   "/",
+                "4",   "5",   "6",   "*",
+                "1",   "2",   "3",   "-",
+                "0",   ".",   "^",   "="
         };
 
         for (String text : buttons) {
-            JButton btn = createStyledButton(text);
-            btn.addActionListener(createAction(text));
+            Color btnBg;
+            Color btnFg;
+
+            // Determine colors based on button type
+            if ("0123456789.".contains(text) && text.length() == 1) {
+                btnBg = GRAY_BTN;
+                btnFg = WHITE_TEXT;
+            } else if (text.equals("=")) {
+                btnBg = PINK_COLOR;
+                btnFg = WHITE_TEXT;
+            } else {
+                btnBg = DARK_BTN;
+                btnFg = Color.WHITE;
+            }
+
+            RoundedButton btn = new RoundedButton(text, btnBg, btnFg);
+            btn.addActionListener(e -> buttonAction(text));
             buttonPanel.add(btn);
         }
 
-        add(display, BorderLayout.NORTH);
         add(buttonPanel, BorderLayout.CENTER);
     }
 
-    private JButton createStyledButton(String text) {
-        RoundedButton btn = new RoundedButton(text, 20);
-        btn.setFont(new Font("Arial", Font.BOLD, 18));
+    private void initHistorySidebar() {
+        JPanel historyPanel = new JPanel(new BorderLayout());
+        historyPanel.setBackground(BLACK_BG);
+        historyPanel.setBorder(new EmptyBorder(10, 0, 15, 15));
 
-        if (text.equals("=")) {
-            btn.setBackground(PINK_COLOR);
-            btn.setForeground(WHITE_TEXT);
-        } else if ("0123456789.".contains(text)) {
-            // Numbers are Dark Gray with White Text
-            btn.setBackground(GRAY_BTN);
-            btn.setForeground(WHITE_TEXT);
-        } else if (text.equals("C")) {
-            btn.setBackground(WHITE_TEXT);
-            btn.setForeground(PINK_COLOR);
-        } else {
-            btn.setBackground(DARK_BTN);
-            btn.setForeground(PINK_COLOR);
-        }
+        JLabel title = new JLabel("History");
+        title.setFont(new Font("Arial", Font.BOLD, 14));
+        title.setForeground(WHITE_TEXT);
+        title.setBorder(new EmptyBorder(0, 0, 5, 0));
+        historyPanel.add(title, BorderLayout.NORTH);
 
-        return btn;
+        historyArea = new JTextArea(10, 12);
+        historyArea.setEditable(false);
+        historyArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        historyArea.setBackground(new Color(245, 245, 245));
+
+        JScrollPane scrollPane = new JScrollPane(historyArea);
+        scrollPane.setBorder(BorderFactory.createLineBorder(PINK_COLOR, 1));
+
+        historyPanel.add(scrollPane, BorderLayout.CENTER);
+        add(historyPanel, BorderLayout.EAST);
     }
 
-    private ActionListener createAction(String text) {
-        return e -> {
-            // If a result is currently shown and the user types a number, clear the screen first
-            if (isResultDisplayed && !text.equals("=")) {
-                if ("0123456789".contains(text)) {
-                    display.setText("");
-                }
-                isResultDisplayed = false;
-                // Reset color to Pink for input
-                display.setForeground(PINK_COLOR);
-            }
+    private void buttonAction(String text) {
+        if (text.equals("=")) {
+            calculateResult();
+        } else if (text.equals("AC")) {
+            display.setText("");
+        } else if (isFunction(text)) {
+            display.setText(display.getText() + text + "(");
+        } else {
+            display.setText(display.getText() + text);
+        }
+        display.requestFocus();
+    }
 
-            switch (text) {
-                case "=":
-                    calculateResult();
-                    break;
-                case "C":
-                    display.setText("");
-                    display.setForeground(PINK_COLOR);
-                    break;
-                case "sqrt":
-                    display.setText(display.getText() + "sqrt(");
-                    break;
-                case "sin": case "cos": case "tan": case "log": case "ln":
-                    display.setText(display.getText() + text + "(");
-                    break;
-                default:
-                    display.setText(display.getText() + text);
-            }
-        };
+    private boolean isFunction(String text) {
+        return "sin cos tan log ln".contains(text);
     }
 
     private void calculateResult() {
         try {
             String input = display.getText();
-            double result = mathService.evaluate(input);
+            if (input.isEmpty()) return;
 
-            if (result == (long) result) {
-                display.setText(String.format("%d", (long) result));
+            double result = MathService.evaluate(input, isDegreeMode);
+
+            String formattedResult;
+            if (Math.abs(result) > 10000000 || (Math.abs(result) < 0.0001 && result != 0)) {
+                DecimalFormat sciForm = new DecimalFormat("0.###E0");
+                formattedResult = sciForm.format(result);
             } else {
-                display.setText(String.format("%.4f", result));
+                if (result == (long) result) {
+                    formattedResult = String.format("%d", (long) result);
+                } else {
+                    formattedResult = String.format("%s", result);
+                }
             }
+
+            display.setText(formattedResult);
+            addToHistory(input, formattedResult);
+
+        } catch (Exception e) {
+            display.setText("Error");
+        }
+    }
+
+    private void addToHistory(String expr, String res) {
+        historyArea.append(expr + "\n= " + res + "\n\n");
+        historyArea.setCaretPosition(historyArea.getDocument().getLength());
+    }
+}
