@@ -72,4 +72,8 @@ public class CalculatorUI extends JFrame {
     }
 
     private JButton createStyledButton(String text) {
+        RoundedButton btn = new RoundedButton(text, 20);
+        btn.setFont(new Font("Arial", Font.BOLD, 18));
+
+
 
