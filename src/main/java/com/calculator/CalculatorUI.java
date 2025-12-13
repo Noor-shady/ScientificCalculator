@@ -83,3 +83,7 @@ public class CalculatorUI extends JFrame {
             btn.setBackground(GRAY_BTN);
             btn.setForeground(WHITE_TEXT);
         } else if (text.equals("C")) {
+            btn.setBackground(WHITE_TEXT);
+            btn.setForeground(PINK_COLOR);
+        } else {
+
