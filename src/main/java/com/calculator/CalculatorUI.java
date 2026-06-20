@@ -10,6 +10,10 @@ public class CalculatorUI extends JFrame implements ActionListener {
     private JTextField display;
 
     public CalculatorUI() {
-        // --- 1. Frame Setup ---
+        // --- Frame Setup ---
         setTitle("Scientific Calculator");
         setSize(400, 600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // Centers the window on your screen
+        setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
