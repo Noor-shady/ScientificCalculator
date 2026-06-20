@@ -14,3 +14,4 @@ public class CalculatorUI extends JFrame implements ActionListener {
     private final Color backgroundCream = new Color(250, 246, 242); // Warm off-white
     private final Color textTaupe = new Color(90, 74, 76);          // Dusty brown/mauve instead of harsh black
     private final Color buttonWhite = new Color(255, 255, 255);
+    private final Color pastelPink = new Color(244, 219, 224);
