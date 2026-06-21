@@ -10,3 +10,8 @@ public class RoundedButton extends JButton {
 
     public RoundedButton(String text) {
         super(text);
+
+        setOpaque(false);
+        setContentAreaFilled(false); // Stops Java from drawing a harsh rectangle background
+        setFocusPainted(false);      // Removes the dotted line when you click
+        setBorderPainted(false);     // Removes the default 3D border
