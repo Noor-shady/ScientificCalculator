@@ -28,6 +28,7 @@ public class CalculatorUI extends JFrame implements ActionListener {
 
         // --- Display Area ---
         display = new JTextField();
+        // Using a clean, rounded font. Quicksand or Avenir are great if I have them installed!
         display.setFont(new Font("SansSerif", Font.PLAIN, 40));
         display.setHorizontalAlignment(JTextField.RIGHT);
         display.setEditable(false);
@@ -38,4 +39,31 @@ public class CalculatorUI extends JFrame implements ActionListener {
 
         // --- Button Grid ---
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(7, 4, 10, 10));
+        buttonPanel.setLayout(new GridLayout(7, 4, 10, 10)); // Wider 10px gaps for a modern look
+        buttonPanel.setBackground(backgroundCream);
+        buttonPanel.setBorder(new EmptyBorder(10, 20, 30, 20));
+
+        String[] buttons = {
+                "sin(", "cos(", "tan(", "C",
+                "log(", "log2(", "sqrt(", "Del",
+                "pi", "e", "^", "/",
+                "(", ")", "%", "*",
+                "7", "8", "9", "-",
+                "4", "5", "6", "+",
+                "1", "2", "3", "=",
+                ".", "0", "00", ""
+        };
+
+        for (String text : buttons) {
+            if (text.isEmpty()) {
+                buttonPanel.add(new JLabel(""));
+                continue;
+            }
+
+            // ASSUMING I use your RoundedButton class here!
+            // If RoundedButton extends JButton, this will work perfectly.
+            JButton button = new RoundedButton(text);
+            button.setFont(new Font("SansSerif", Font.BOLD, 16));
+            button.setForeground(textTaupe);
+            button.setFocusPainted(false);
+            button.setBorderPainted(false); // Removes harsh default borders
