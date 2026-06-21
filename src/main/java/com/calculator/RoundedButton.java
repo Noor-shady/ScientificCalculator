@@ -28,3 +28,7 @@ public class RoundedButton extends JButton {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         // Handle Hover and Click Colors
+        if (getModel().isPressed()) {
+            // Darken slightly when clicked
+            g2.setColor(getBackground().darker());
+        } else if (getModel().isRollover()) {
