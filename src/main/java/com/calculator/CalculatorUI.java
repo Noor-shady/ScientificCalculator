@@ -28,3 +28,14 @@ public class CalculatorUI extends JFrame implements ActionListener {
 
         // --- Display Area ---
         display = new JTextField();
+        display.setFont(new Font("SansSerif", Font.PLAIN, 40));
+        display.setHorizontalAlignment(JTextField.RIGHT);
+        display.setEditable(false);
+        display.setBackground(backgroundCream);
+        display.setForeground(textTaupe);
+        display.setBorder(new EmptyBorder(30, 20, 30, 20)); // Lots of breathing room
+        add(display, BorderLayout.NORTH);
+
+        // --- Button Grid ---
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new GridLayout(7, 4, 10, 10));
