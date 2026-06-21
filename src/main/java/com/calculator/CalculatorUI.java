@@ -16,3 +16,4 @@ public class CalculatorUI extends JFrame implements ActionListener {
     private final Color buttonWhite = new Color(255, 255, 255);
     private final Color pastelPink = new Color(244, 219, 224);
     private final Color sageGreen = new Color(209, 226, 209);
+    private final Color operatorLavender = new Color(230, 224, 248);
