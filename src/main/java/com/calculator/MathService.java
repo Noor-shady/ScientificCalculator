@@ -1,89 +1,33 @@
 package com.calculator;
 
+import net.objecthunter.exp4j.Expression;
+import net.objecthunter.exp4j.ExpressionBuilder;
+
 public class MathService {
 
-    public static double evaluate(final String str, boolean isDegreeMode) {
-        return new Object() {
-            int pos = -1, ch;
+    /**
+     * Evaluates a mathematical string expression using the exp4j library.
+     * @param expressionText The string from the calculator display
+     * @return The calculated double result
+     * @throws RuntimeException if the expression is invalid
+     */
+    public static double evaluate(String expressionText) {
 
-            void nextChar() {
-                ch = (++pos < str.length()) ? str.charAt(pos) : -1;
-            }
+        // Pre-process the string for common calculator quirks
+        // (Optional: If users type "X%", I can replace it with "(X/100)" before parsing)
+        String cleanExpression = expressionText.replace("%", "/100");
 
-            boolean eat(int charToEat) {
-                while (ch == ' ') nextChar();
-                if (ch == charToEat) {
-                    nextChar();
-                    return true;
-                }
-                return false;
-            }
+        try {
+            // Build and evaluate the expression using exp4j
+            Expression expression = new ExpressionBuilder(cleanExpression)
+                    .build();
 
-            double parse() {
-                nextChar();
-                double x = parseExpression();
-                if (pos < str.length()) throw new RuntimeException("Unexpected: " + (char)ch);
-                return x;
-            }
+            return expression.evaluate();
 
-            double parseExpression() {
-                double x = parseTerm();
-                for (;;) {
-                    if      (eat('+')) x += parseTerm();
-                    else if (eat('-')) x -= parseTerm();
-                    else return x;
-                }
-            }
-
-            double parseTerm() {
-                double x = parseFactor();
-                for (;;) {
-                    if      (eat('*')) x *= parseFactor();
-                    else if (eat('/')) x /= parseFactor();
-                    else return x;
-                }
-            }
-
-            double parseFactor() {
-                if (eat('+')) return parseFactor();
-                if (eat('-')) return -parseFactor();
-
-                double x;
-                int startPos = this.pos;
-                if (eat('(')) {
-                    x = parseExpression();
-                    eat(')');
-                } else if ((ch >= '0' && ch <= '9') || ch == '.') {
-                    while ((ch >= '0' && ch <= '9') || ch == '.') nextChar();
-                    x = Double.parseDouble(str.substring(startPos, this.pos));
-                } else if (ch >= 'a' && ch <= 'z') {
-                    while (ch >= 'a' && ch <= 'z') nextChar();
-                    String func = str.substring(startPos, this.pos);
-                    x = parseFactor();
-
-                    if (isDegreeMode) {
-                        if (func.equals("sin")) x = Math.sin(Math.toRadians(x));
-                        else if (func.equals("cos")) x = Math.cos(Math.toRadians(x));
-                        else if (func.equals("tan")) x = Math.tan(Math.toRadians(x));
-                        else if (func.equals("log")) x = Math.log10(x);
-                        else if (func.equals("ln")) x = Math.log(x);
-                        else throw new RuntimeException("Unknown function: " + func);
-                    } else {
-                        if (func.equals("sin")) x = Math.sin(x);
-                        else if (func.equals("cos")) x = Math.cos(x);
-                        else if (func.equals("tan")) x = Math.tan(x);
-                        else if (func.equals("log")) x = Math.log10(x);
-                        else if (func.equals("ln")) x = Math.log(x);
-                        else throw new RuntimeException("Unknown function: " + func);
-                    }
-                } else {
-                    throw new RuntimeException("Unexpected: " + (char)ch);
-                }
-
-                if (eat('^')) x = Math.pow(x, parseFactor());
-
-                return x;
-            }
-        }.parse();
+        } catch (IllegalArgumentException | ArithmeticException e) {
+            // Catch parsing errors (e.g., mismatched parentheses, missing operands)
+            // I throw a generic exception here so the UI knows to print "Error"
+            throw new RuntimeException("Invalid mathematical expression", e);
+        }
     }
 }

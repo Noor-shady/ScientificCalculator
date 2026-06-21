@@ -16,3 +16,9 @@ public class Main {
         }
 
         // Safely launch the UI on the Event Dispatch Thread
+        SwingUtilities.invokeLater(() -> {
+            CalculatorUI calculator = new CalculatorUI();
+            calculator.setVisible(true);
+        });
+    }
+}
