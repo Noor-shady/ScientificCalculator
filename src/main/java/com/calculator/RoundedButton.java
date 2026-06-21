@@ -32,3 +32,14 @@ public class RoundedButton extends JButton {
             // Darken slightly when clicked
             g2.setColor(getBackground().darker());
         } else if (getModel().isRollover()) {
+            g2.setColor(getBackground().brighter());
+        } else {
+            // Normal color
+            g2.setColor(getBackground());
+        }
+
+        // Draw the filled rounded rectangle
+        g2.fillRoundRect(0, 0, getWidth(), getHeight(), radius, radius);
+
+        // Always dispose of the Graphics object to save memory!
+        g2.dispose();
