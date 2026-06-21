@@ -67,3 +67,52 @@ public class CalculatorUI extends JFrame implements ActionListener {
             button.setForeground(textTaupe);
             button.setFocusPainted(false);
             button.setBorderPainted(false); // Removes harsh default borders
+
+            if (text.equals("C") || text.equals("Del")) {
+                button.setBackground(pastelPink);
+            } else if (text.equals("=")) {
+                button.setBackground(sageGreen);
+            } else if (text.matches("[\\+\\-\\*/\\^\\%]")) {
+                button.setBackground(operatorLavender);
+            } else {
+                button.setBackground(buttonWhite); // Numbers and standard functions
+            }
+
+            button.addActionListener(this);
+            buttonPanel.add(button);
+        }
+
+        add(buttonPanel, BorderLayout.CENTER);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String command = e.getActionCommand();
+        String currentText = display.getText();
+
+        if (command.equals("C")) {
+            display.setText("");
+        } else if (command.equals("Del")) {
+            if (!currentText.isEmpty() && !currentText.equals("Error")) {
+                display.setText(currentText.substring(0, currentText.length() - 1));
+            }
+        } else if (command.equals("=")) {
+            try {
+                double result = MathService.evaluate(currentText);
+                if (result == (long) result) {
+                    display.setText(String.format("%d", (long) result));
+                } else {
+                    display.setText(String.valueOf(result));
+                }
+            } catch (Exception ex) {
+                display.setText("Error");
+            }
+        } else {
+            if (currentText.equals("Error")) {
+                display.setText(command);
+            } else {
+                display.setText(currentText + command);
+            }
+        }
+    }
+}
