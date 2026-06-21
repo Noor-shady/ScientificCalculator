@@ -13,7 +13,7 @@ public class RoundedButton extends JButton {
 
         setOpaque(false);
         setContentAreaFilled(false); // Stops Java from drawing a harsh rectangle background
-        setFocusPainted(false);      // Removes the dotted line when you click
+        setFocusPainted(false);      // Removes the dotted line when I click
         setBorderPainted(false);     // Removes the default 3D border
 
         setMargin(new Insets(10, 15, 10, 15));
@@ -43,3 +43,14 @@ public class RoundedButton extends JButton {
 
         // Always dispose of the Graphics object to save memory!
         g2.dispose();
+
+        super.paintComponent(g);
+    }
+
+    // Optional: override paintBorder with nothing so Java NEVER draws a border,
+    // ensuring the button stays perfectly soft and minimal.
+    @Override
+    protected void paintBorder(Graphics g) {
+        // Do nothing!
+    }
+}
