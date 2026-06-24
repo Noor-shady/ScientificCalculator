@@ -65,3 +65,88 @@ public class CalculatorUI extends JFrame implements ActionListener {
             JButton button = new RoundedButton(text);
             button.setFont(new Font("SansSerif", Font.BOLD, 16));
             button.setForeground(textTaupe);
+
+            button.setFocusable(false);
+            button.setBorderPainted(false);
+
+            if (text.equals("C") || text.equals("Del")) {
+                button.setBackground(pastelPink);
+            } else if (text.equals("=")) {
+                button.setBackground(sageGreen);
+            } else if (text.matches("[\\+\\-\\*/\\^\\%]")) {
+                button.setBackground(operatorLavender);
+            } else {
+                button.setBackground(buttonWhite);
+            }
+
+            button.addActionListener(this);
+            buttonPanel.add(button);
+        }
+
+        add(buttonPanel, BorderLayout.CENTER);
+
+        setupKeyboardListener();
+    }
+
+    private void setupKeyboardListener() {
+        this.setFocusable(true);
+        this.requestFocusInWindow();
+
+        this.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                char key = e.getKeyChar();
+                int keyCode = e.getKeyCode();
+
+                if (keyCode == KeyEvent.VK_ENTER) {
+                    processCommand("=");
+                } else if (keyCode == KeyEvent.VK_BACK_SPACE) {
+                    processCommand("Del");
+                } else if (keyCode == KeyEvent.VK_ESCAPE) {
+                    processCommand("C");
+                }
+                // If the user typed a valid math character, send it to the display
+                else if ("0123456789+-*/.%^()".indexOf(key) != -1) {
+                    processCommand(String.valueOf(key));
+                }
+            }
+        });
+    }
+
+    // --- Event Handling ---
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        // Mouse clicks route here
+        processCommand(e.getActionCommand());
+    }
+
+    private void processCommand(String command) {
+        String currentText = display.getText();
+
+        if (command.equals("C")) {
+            display.setText("");
+        } else if (command.equals("Del")) {
+            if (!currentText.isEmpty() && !currentText.equals("Error")) {
+                display.setText(currentText.substring(0, currentText.length() - 1));
+            }
+        } else if (command.equals("=")) {
+            try {
+                if(currentText.isEmpty()) return;
+                double result = MathService.evaluate(currentText);
+                if (result == (long) result) {
+                    display.setText(String.format("%d", (long) result));
+                } else {
+                    display.setText(String.valueOf(result));
+                }
+            } catch (Exception ex) {
+                display.setText("Error");
+            }
+        } else {
+            if (currentText.equals("Error")) {
+                display.setText(command);
+            } else {
+                display.setText(currentText + command);
+            }
+        }
+    }
+}
