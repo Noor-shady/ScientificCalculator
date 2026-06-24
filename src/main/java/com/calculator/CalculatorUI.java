@@ -5,14 +5,16 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class CalculatorUI extends JFrame implements ActionListener {
 
     private JTextField display;
 
     // --- Aesthetic Color Palette ---
-    private final Color backgroundCream = new Color(250, 246, 242); // Warm off-white
-    private final Color textTaupe = new Color(90, 74, 76);          // Dusty brown/mauve instead of harsh black
+    private final Color backgroundCream = new Color(250, 246, 242);
+    private final Color textTaupe = new Color(90, 74, 76);
     private final Color buttonWhite = new Color(255, 255, 255);
     private final Color pastelPink = new Color(244, 219, 224);
     private final Color sageGreen = new Color(209, 226, 209);
@@ -20,99 +22,4 @@ public class CalculatorUI extends JFrame implements ActionListener {
 
     public CalculatorUI() {
         setTitle("Scientific Calculator");
-        setSize(380, 620);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setLayout(new BorderLayout());
-        getContentPane().setBackground(backgroundCream); // Set main background
-
-        // --- Display Area ---
-        display = new JTextField();
-        // Using a clean, rounded font. Quicksand or Avenir are great if I have them installed!
-        display.setFont(new Font("SansSerif", Font.PLAIN, 40));
-        display.setHorizontalAlignment(JTextField.RIGHT);
-        display.setEditable(false);
-        display.setBackground(backgroundCream);
-        display.setForeground(textTaupe);
-        display.setBorder(new EmptyBorder(30, 20, 30, 20)); // Lots of breathing room
-        add(display, BorderLayout.NORTH);
-
-        // --- Button Grid ---
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(7, 4, 10, 10)); // Wider 10px gaps for a modern look
-        buttonPanel.setBackground(backgroundCream);
-        buttonPanel.setBorder(new EmptyBorder(10, 20, 30, 20));
-
-        String[] buttons = {
-                "sin(", "cos(", "tan(", "C",
-                "log(", "log2(", "sqrt(", "Del",
-                "pi", "e", "^", "/",
-                "(", ")", "%", "*",
-                "7", "8", "9", "-",
-                "4", "5", "6", "+",
-                "1", "2", "3", "=",
-                ".", "0", "00", ""
-        };
-
-        for (String text : buttons) {
-            if (text.isEmpty()) {
-                buttonPanel.add(new JLabel(""));
-                continue;
-            }
-
-            // ASSUMING I use your RoundedButton class here!
-            // If RoundedButton extends JButton, this will work perfectly.
-            JButton button = new RoundedButton(text);
-            button.setFont(new Font("SansSerif", Font.BOLD, 16));
-            button.setForeground(textTaupe);
-            button.setFocusPainted(false);
-            button.setBorderPainted(false); // Removes harsh default borders
-
-            if (text.equals("C") || text.equals("Del")) {
-                button.setBackground(pastelPink);
-            } else if (text.equals("=")) {
-                button.setBackground(sageGreen);
-            } else if (text.matches("[\\+\\-\\*/\\^\\%]")) {
-                button.setBackground(operatorLavender);
-            } else {
-                button.setBackground(buttonWhite); // Numbers and standard functions
-            }
-
-            button.addActionListener(this);
-            buttonPanel.add(button);
-        }
-
-        add(buttonPanel, BorderLayout.CENTER);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        String command = e.getActionCommand();
-        String currentText = display.getText();
-
-        if (command.equals("C")) {
-            display.setText("");
-        } else if (command.equals("Del")) {
-            if (!currentText.isEmpty() && !currentText.equals("Error")) {
-                display.setText(currentText.substring(0, currentText.length() - 1));
-            }
-        } else if (command.equals("=")) {
-            try {
-                double result = MathService.evaluate(currentText);
-                if (result == (long) result) {
-                    display.setText(String.format("%d", (long) result));
-                } else {
-                    display.setText(String.valueOf(result));
-                }
-            } catch (Exception ex) {
-                display.setText("Error");
-            }
-        } else {
-            if (currentText.equals("Error")) {
-                display.setText(command);
-            } else {
-                display.setText(currentText + command);
-            }
-        }
-    }
-}
+        setSize(380, 680);
