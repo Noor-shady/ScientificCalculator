@@ -23,3 +23,7 @@ public class CalculatorUI extends JFrame implements ActionListener {
     public CalculatorUI() {
         setTitle("Scientific Calculator");
         setSize(380, 680);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
+        getContentPane().setBackground(backgroundCream);
